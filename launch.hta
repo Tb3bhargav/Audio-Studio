@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>StudioVoice Launcher</title>
+<HTA:APPLICATION
+  ID="StudioVoiceLauncher"
+  APPLICATIONNAME="StudioVoiceLauncher"
+  BORDER="thin"
+  CAPTION="yes"
+  SHOWINTASKBAR="yes"
+  SINGLEINSTANCE="yes"
+  SYSMENU="yes"
+  WINDOWSTATE="normal"
+  SCROLL="no"
+  CONTEXTMENU="no"
+/>
+<style>
+  body { font-family: "Segoe UI", sans-serif; background: #0b0b12; color: #f4f4f7; margin: 0; padding: 20px; }
+  .card { max-width: 480px; margin: 0 auto; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.14); border-radius: 14px; padding: 22px 24px; }
+  h1 { font-size: 20px; margin: 0 0 6px; }
+  p { font-size: 13px; line-height: 1.55; opacity: 0.8; }
+  .note { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.12); border-radius: 8px; padding: 8px 10px; font-size: 12px; opacity: 0.85; }
+  button { display: block; width: 100%; margin: 8px 0; padding: 11px; font-size: 14px; font-weight: 600;
+           border-radius: 9px; border: 0; background: linear-gradient(135deg,#e84690,#9b59ff); color: #fff; cursor: pointer; }
+  button.alt { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.16); font-weight: 500; }
+  #status { font-size: 12px; color: #8dc9ff; min-height: 18px; margin-top: 8px; }
+</style>
+<script language="VBScript">
+  Dim shell, appDir
+  Set shell = CreateObject("WScript.Shell")
+  appDir = HtaFolder()
+
+  Function HtaFolder()
+    Dim u
+    u = document.URL
+    u = Replace(u, "file:///", "")
+    u = Replace(u, "/", "\")
+    u = UnEscape(u)
+    HtaFolder = Left(u, InStrRev(u, "\") - 1)
+  End Function
+
+  Sub Window_OnLoad()
+    window.resizeTo 560, 640
+    document.getElementById("projdir").innerText = appDir
+  End Sub
+
+  Sub SetStatus(msg)
+    document.getElementById("status").innerText = msg
+  End Sub
+
+  Sub InstallDeps()
+    shell.CurrentDirectory = appDir
+    shell.Run "cmd /k python -m pip install -r requirements.txt", 1, False
+    SetStatus "Installing Python dependencies in a new window..."
+  End Sub
+
+  Sub StartServer()
+    shell.CurrentDirectory = appDir
+    shell.Run "cmd /k python -m uvicorn main:app --port 8000", 1, False
+    SetStatus "Server starting on http://127.0.0.1:8000 ..."
+  End Sub
+
+  Sub OpenApp()
+    shell.Run "http://127.0.0.1:8000", 1, False
+    SetStatus "Opening app in browser..."
+  End Sub
+
+  Sub OpenMain()
+    shell.Run Chr(34) & appDir & "\frontend\index.html" & Chr(34), 1, False
+    SetStatus "Opening frontend/index.html (use the server above for full features)."
+  End Sub
+</script>
+</head>
+<body>
+  <div class="card">
+    <h1>StudioVoice</h1>
+    <p>Upload audio, enhance it with NVIDIA Maxine Studio Voice (FastAPI backend + vanilla JS frontend).</p>
+    <p class="note">Needs: Python 3.11, ffmpeg on PATH. If you use the bundled <code>.venv</code>, run the server from it. Project folder:<br><span id="projdir"></span></p>
+    <button onclick="vbscript:InstallDeps()">1. Install deps (pip install -r requirements.txt)</button>
+    <button onclick="vbscript:StartServer()">2. Start Server (uvicorn main:app :8000)</button>
+    <button class="alt" onclick="vbscript:OpenApp()">3. Open App in Browser (127.0.0.1:8000)</button>
+    <button class="alt" onclick="vbscript:OpenMain()">Open Main File (frontend/index.html)</button>
+    <div id="status"></div>
+  </div>
+</body>
+</html>

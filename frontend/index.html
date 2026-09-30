@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>StudioVoice</title>
+    <meta name="description" content="Upload audio and enhance it with NVIDIA Maxine Studio Voice." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="/style.css" />
+  </head>
+  <body>
+    <video class="hero-video" autoplay muted loop playsinline preload="auto" src="/static/loop.mp4" aria-hidden="true"></video>
+    <div class="video-fallback" aria-hidden="true"></div>
+    <div class="particles" id="particles" aria-hidden="true"></div>
+
+    <main class="shell">
+      <section class="glass-panel" aria-label="StudioVoice uploader" tabindex="0">
+        <div class="eyebrow">NVIDIA Maxine Studio Voice</div>
+        <h1>Studio-quality voice, in one click</h1>
+        <p class="subhead">Drop any audio file. NVIDIA Maxine turns it into a studio recording.</p>
+
+        <div class="drop-zone" id="dropZone" role="button" tabindex="0" aria-label="Drop audio file here or click to browse">
+          <input id="fileInput" type="file" accept="audio/*,video/mp4,.mp4" hidden />
+          <div class="drop-zone-copy" id="dropZoneCopy">
+            <strong>Drop audio file here, or click to browse</strong>
+            <span id="fileMeta">Supports audio files and MP4 video up to 200 MB.</span>
+          </div>
+        </div>
+
+        <button class="enhance-button" id="enhanceButton" type="button" disabled>
+          <span class="button-label">Enhance with Studio Voice</span>
+        </button>
+
+        <section class="results" id="results" hidden>
+          <div class="audio-card">
+            <div class="audio-label-row">
+              <span>Original</span>
+              <span class="audio-details" id="originalDetails"></span>
+            </div>
+            <audio id="originalPlayer" controls preload="metadata"></audio>
+          </div>
+
+          <button class="ab-toggle" id="abToggle" type="button">Play both</button>
+
+          <div class="audio-card">
+            <div class="audio-label-row">
+              <span>Enhanced</span>
+              <span class="audio-details" id="enhancedDetails"></span>
+            </div>
+            <audio id="enhancedPlayer" controls preload="metadata"></audio>
+          </div>
+        </section>
+
+        <section class="download-row" id="downloadRow" hidden>
+          <button class="download-button" data-format="wav" type="button"><span>WAV</span><small id="size-wav"></small></button>
+          <button class="download-button" data-format="mp3" type="button"><span>MP3</span><small id="size-mp3"></small></button>
+          <button class="download-button" data-format="aac" type="button"><span>AAC</span><small id="size-aac"></small></button>
+          <button class="download-button" data-format="mp4" type="button"><span>MP4</span><small id="size-mp4"></small></button>
+        </section>
+      </section>
+    </main>
+
+    <div class="toast-stack" id="toastStack" aria-live="polite" aria-atomic="true"></div>
+
+    <script src="/app.js" defer></script>
+  </body>
+</html>

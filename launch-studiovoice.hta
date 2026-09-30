@@ -1,0 +1,76 @@
+<html>
+<head>
+  <title>StudioVoice Launcher</title>
+  <HTA:APPLICATION
+    ID="StudioVoiceLauncher"
+    APPLICATIONNAME="StudioVoiceLauncher"
+    BORDER="thin"
+    CAPTION="yes"
+    SHOWINTASKBAR="yes"
+    SINGLEINSTANCE="yes"
+    SYSMENU="yes"
+    WINDOWSTATE="normal"
+  />
+  <script language="javascript">
+    var shell = new ActiveXObject('WScript.Shell');
+    var started = false;
+    var appFolder = 'C:\\Users\\nj322ws\\OneDrive\\Desktop\\My Projects\\Audio Studio';
+    var pythonExe = 'C:\\Users\\nj322ws\\OneDrive\\Desktop\\My Projects\\Audio Studio\\.venv\\Scripts\\python.exe';
+    var ffmpegBin = 'C:\\Users\\nj322ws\\AppData\\Local\\Microsoft\\WinGet\\Packages\\Gyan.FFmpeg_Microsoft.Winget.Source_8wekyb3d8bbwe\\ffmpeg-8.1.2-full_build\\bin';
+
+    function launchApp() {
+      if (started) {
+        return;
+      }
+      started = true;
+
+      shell.CurrentDirectory = appFolder;
+      shell.Environment('Process')('PATH') = ffmpegBin + ';' + shell.Environment('Process')('PATH');
+      shell.Run('"' + pythonExe + '" -m uvicorn main:app --port 8000', 0, false);
+      window.setTimeout(function () {
+        shell.Run('cmd /c start "" http://127.0.0.1:8000', 0, false);
+      }, 2000);
+    }
+
+    window.onload = launchApp;
+  </script>
+  <style>
+    html, body {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      background: #0b0b12;
+      color: #f4f4f7;
+      font-family: Segoe UI, sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .card {
+      padding: 24px 28px;
+      border-radius: 18px;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.12);
+      box-shadow: 0 12px 32px rgba(0,0,0,0.35);
+      text-align: center;
+      max-width: 420px;
+    }
+    .title {
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+    .sub {
+      font-size: 14px;
+      opacity: 0.75;
+      line-height: 1.5;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="title">StudioVoice is starting</div>
+    <div class="sub">The app will open in your browser automatically.</div>
+  </div>
+</body>
+</html>
